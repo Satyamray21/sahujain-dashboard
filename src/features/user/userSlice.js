@@ -15,9 +15,9 @@ export const registerCandidate = createAsyncThunk(
 export const loginCandidate = createAsyncThunk(
   'candidate/login',
   async ({ applicationId, password }, { rejectWithValue }) => {
-    console.log("API call started with", formData)
+    console.log("API call started with", { applicationId, password })
     try {
-      const res = await axios.post('candidate/login', { applicationId, password }, { withCredentials: true });
+      const res = await axios.post('candidate/login', { applicationId, password });
       return res.data;
     } catch (err) {
         console.log("API error:", err); 

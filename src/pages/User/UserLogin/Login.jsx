@@ -17,29 +17,38 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import SchoolIcon from '@mui/icons-material/School';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { loginCandidate } from '../../../features/user/userSlice';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
-            applicationNumber: '',
+            applicationId: '',
             password: '',
         },
         validationSchema: Yup.object({
-            applicationNumber: Yup.string().required('Application number is required'),
+            applicationId: Yup.string().required('Application number is required'),
             password: Yup.string().required('Password is required'),
         }),
         onSubmit: async (values) => {
-            // Mock API login
-            if (values.applicationNumber === '123' && values.password === 'pass') {
-                navigate('/register');
-            } else {
-                alert('Invalid credentials');
-            }
-        },
-    });
+    const result = await dispatch(
+      loginCandidate({
+        applicationId: values.applicationId,
+        password: values.password,
+      })
+    );
+
+    if (loginCandidate.fulfilled.match(result)) {
+      alert("Login successful!");
+      navigate("/registration"); 
+    } else {
+      alert(result.payload || "Invalid credentials");
+    }
+  },
+});
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -103,12 +112,12 @@ const Login = () => {
                             <TextField
                                 fullWidth
                                 label="Application Number"
-                                name="applicationNumber"
+                                name="applicationId"
                                 variant="outlined"
-                                value={formik.values.applicationNumber}
+                                value={formik.values.applicationId}
                                 onChange={formik.handleChange}
-                                error={formik.touched.applicationNumber && Boolean(formik.errors.applicationNumber)}
-                                helperText={formik.touched.applicationNumber && formik.errors.applicationNumber}
+                                error={formik.touched.applicationId && Boolean(formik.errors.applicationId)}
+                                helperText={formik.touched.applicationId && formik.errors.applicationId}
                                 InputProps={{
                                     style: { borderRadius: 8 }
                                 }}
