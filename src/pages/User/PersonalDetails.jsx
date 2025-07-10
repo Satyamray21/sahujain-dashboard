@@ -17,7 +17,8 @@ import { Person, Email, Phone, CalendarToday, Fingerprint, HowToVote } from '@mu
 import CategoryIcon from '@mui/icons-material/Category';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import HomeIcon from '@mui/icons-material/Home';
-
+import { useDispatch } from 'react-redux';
+import {submitPersonalInfo} from "../../features/personalInfo/personalInfoSlice"
 const genders = ['Male', 'Female', 'Other'];
 const castes = ['General', 'OBC', 'SC', 'ST'];
 const categories = ['None', 'PWD', 'EWS', 'Ex-Serviceman'];
@@ -89,7 +90,7 @@ const validationSchema = Yup.object().shape({
 const PersonalDetails = () => {
     const [otpSent, setOtpSent] = useState(false);
     const [sameAsPermanent, setSameAsPermanent] = useState(false);
-
+    const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: {
             firstName: '',
@@ -126,9 +127,10 @@ const PersonalDetails = () => {
             candidateSignature: null,
         },
         validationSchema,
-        onSubmit: (values) => {
-            console.log('Form submitted:', values);
-            // Handle form submission
+        onSubmit:  (values) => {
+           
+              dispatch(submitPersonalInfo(values));
+
         }
     });
 
