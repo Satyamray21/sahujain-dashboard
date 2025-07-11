@@ -18,7 +18,15 @@ export const loginCandidate = createAsyncThunk(
     console.log("API call started with", { applicationId, password })
     try {
       const res = await axios.post('candidate/login', { applicationId, password });
-      return res.data;
+            const token = res.data?.data?.token;
+
+      if (token) {
+        localStorage.setItem("token", token); // ✅ Save token here
+        console.log("Token saved to localStorage:", token);
+      } else {
+        console.warn("Token missing in response");
+      }
+      return res.data.data;
     } catch (err) {
         console.log("API error:", err); 
       return rejectWithValue(err.response?.data?.message || 'Login failed');

@@ -19,13 +19,24 @@ export const submitPersonalInfo = createAsyncThunk(
             formData.append(`${key === 'permanentAddress' ? 'P' : 'T'}${subKey}`, formValues[key][subKey]);
           }
         } else if (key === 'candidatePhoto' || key === 'candidateSignature') {
-          formData.append(key === 'candidatePhoto' ? 'candidate_photo' : 'candidate_signature', formValues[key]);
+          const file = formValues[key];
+if (file && file instanceof File) {
+  formData.append(
+    key === 'candidatePhoto' ? 'candidate_photo' : 'candidate_signature',
+    file
+  );
+} else {
+  console.warn(`${key} is not a valid File. Skipping.`);
+}
+
         } else {
           formData.append(key, formValues[key]);
         }
       }
+        console.log("✅ candidate_photo in FormData:", formData.get("candidate_photo"));
+console.log("✅ candidate_signature in FormData:", formData.get("candidate_signature"));
 
-      const response = await axios.post('/create', formData, {
+      const response = await axios.post('/personalInfo/create', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

@@ -11,6 +11,7 @@ import {
     Box,
     Button,
     Checkbox,
+    FormHelperText,
     FormControlLabel
 } from '@mui/material';
 import { Person, Email, Phone, CalendarToday, Fingerprint, HowToVote } from '@mui/icons-material';
