@@ -33,8 +33,7 @@ if (file && file instanceof File) {
           formData.append(key, formValues[key]);
         }
       }
-        console.log("✅ candidate_photo in FormData:", formData.get("candidate_photo"));
-console.log("✅ candidate_signature in FormData:", formData.get("candidate_signature"));
+        
 
       const response = await axios.post('/personalInfo/create', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -52,7 +51,7 @@ export const submitAcademicInfo = createAsyncThunk(
   'application/submitAcademicInfo',
   async (academicRecords, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/register/academic-info', { academicRecords });
+      const response = await axios.post('/personalInfo/register/academic-info', { academicRecords });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -64,7 +63,7 @@ export const submitSubjectInfo = createAsyncThunk(
   'application/submitSubjectInfo',
   async ({ majorSubject, minorSubject }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/register/subject-info', {
+      const response = await axios.post('/personalInfo/register/subject-info', {
         majorSubject,
         minorSubject,
       });
