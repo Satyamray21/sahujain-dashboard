@@ -1,144 +1,180 @@
 import React, { useState } from 'react';
 import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
+  Grid,
+  TextField,
   MenuItem,
-  Select,
   Typography,
+  Divider,
   Stack,
+  Box,
   CircularProgress,
+  Button,
+  Select,
+  InputLabel,
+  FormControl,
+  Snackbar,
+  Alert
 } from '@mui/material';
+import { School } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { submitSubjectInfo } from '../../features/personalInfo/personalInfoSlice';
+import { submitSubjectInfo } from '../../features/personalInfo/personalInfoSlice'; // adjust path if needed
 
 const subjectOptions = {
   BA: {
-    major: ['History', 'Political Science', 'Sociology', 'Geography', 'Economics'],
-    minor: ['Hindi', 'English', 'Sanskrit', 'Philosophy'],
+    major: ['History', 'Political Science', 'Economics', 'Psychology', 'Sociology'],
+    minor: ['Philosophy', 'Geography', 'Education', 'Hindi', 'English']
   },
   BCom: {
     major: ['Accountancy', 'Business Studies', 'Economics'],
-    minor: ['Mathematics', 'Statistics', 'English'],
+    minor: ['Mathematics', 'Statistics', 'Banking']
   },
   BSc: {
     major: ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Computer Science'],
-    minor: ['Environmental Science', 'English', 'Statistics'],
-  },
+    minor: ['Environmental Science', 'Electronics', 'Zoology', 'Geology']
+  }
 };
-
-const courseOptions = Object.keys(subjectOptions);
 
 const SubjectInfoForm = () => {
   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.personalInfo);
+
   const [course, setCourse] = useState('');
-  const [majorSubject, setMajorSubject] = useState('');
+  const [majorSubject, setMajorSubject] = useState([]);
   const [minorSubject, setMinorSubject] = useState('');
   const [error, setError] = useState('');
-
-  const { loading, error: submitError, success } = useSelector(
-    (state) => state.subjectInfo || {}
-  );
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = () => {
-    if (!course || !majorSubject || !minorSubject) {
+    if (!course || majorSubject.length === 0 || !minorSubject) {
       setError('Please select all fields');
       return;
     }
-    if (majorSubject === minorSubject) {
+    if (majorSubject.includes(minorSubject)) {
       setError('Major and Minor subjects cannot be the same');
       return;
     }
-    setError('');
-    dispatch(submitSubjectInfo({ course, majorSubject, minorSubject }));
+
+    dispatch(submitSubjectInfo({ course, majorSubject, minorSubject }))
+      .unwrap()
+      .then(() => {
+        setSuccess(true);
+        setCourse('');
+        setMajorSubject([]);
+        setMinorSubject('');
+      })
+      .catch((err) => {
+        setError(err.message || 'Something went wrong');
+      });
   };
 
   return (
-    <Box sx={{ p: 3, maxWidth: 500, mx: 'auto' }}>
-      <Typography variant="h5" mb={2}>
+    <Box p={2}>
+      <Typography variant="h6" gutterBottom>
+        <School fontSize="small" sx={{ mr: 1 }} />
         Subject Information
       </Typography>
+      <Divider sx={{ mb: 2 }} />
 
-      <Stack spacing={2}>
-        {/* Course Select */}
-        <FormControl fullWidth>
-          <InputLabel id="course-label">Select Course</InputLabel>
-          <Select
-            labelId="course-label"
-            id="course"
-            value={course}
-            label="Select Course"
-            onChange={(e) => {
-              setCourse(e.target.value);
-              setMajorSubject('');
-              setMinorSubject('');
-              setError('');
-            }}
-          >
-            {courseOptions.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Major Subject */}
-        {course && (
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel id="major-label">Major Subject</InputLabel>
+            <InputLabel id="course-label">Course</InputLabel>
             <Select
-              labelId="major-label"
-              id="majorSubject"
-              value={majorSubject}
-              label="Major Subject"
-              onChange={(e) => setMajorSubject(e.target.value)}
+              labelId="course-label"
+              id="course"
+              value={course}
+              label="Course"
+              onChange={(e) => {
+                setCourse(e.target.value);
+                setMajorSubject([]);
+                setMinorSubject('');
+              }}
             >
-              {subjectOptions[course].major.map((subject) => (
-                <MenuItem key={subject} value={subject}>
-                  {subject}
+              {Object.keys(subjectOptions).map((key) => (
+                <MenuItem key={key} value={key}>
+                  {key}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-        )}
+        </Grid>
 
-        {/* Minor Subject */}
         {course && (
-          <FormControl fullWidth>
-            <InputLabel id="minor-label">Minor Subject</InputLabel>
-            <Select
-              labelId="minor-label"
-              id="minorSubject"
-              value={minorSubject}
-              label="Minor Subject"
-              onChange={(e) => setMinorSubject(e.target.value)}
-            >
-              {subjectOptions[course].minor.map((subject) => (
-                <MenuItem key={subject} value={subject}>
-                  {subject}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <>
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id="major-label">Major Subject(s)</InputLabel>
+                <Select
+                  labelId="major-label"
+                  id="majorSubject"
+                  multiple
+                  value={majorSubject}
+                  label="Major Subject"
+                  onChange={(e) => setMajorSubject(e.target.value)}
+                  renderValue={(selected) => selected.join(', ')}
+                >
+                  {subjectOptions[course].major.map((subject) => (
+                    <MenuItem key={subject} value={subject}>
+                      {subject}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel id="minor-label">Minor Subject</InputLabel>
+                <Select
+                  labelId="minor-label"
+                  id="minorSubject"
+                  value={minorSubject}
+                  label="Minor Subject"
+                  onChange={(e) => setMinorSubject(e.target.value)}
+                >
+                  {subjectOptions[course].minor.map((subject) => (
+                    <MenuItem key={subject} value={subject}>
+                      {subject}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </>
         )}
+      </Grid>
 
-        {/* Error / Success Messages */}
-        {error && <Typography color="error">{error}</Typography>}
-        {submitError && <Typography color="error">{submitError}</Typography>}
-        {success && <Typography color="green">Subject info submitted!</Typography>}
-
-        {/* Submit Button */}
+      <Stack direction="row" justifyContent="flex-end" spacing={2} mt={3}>
         <Button
           variant="contained"
           onClick={handleSubmit}
           disabled={loading}
-          sx={{ mt: 2 }}
         >
           {loading ? <CircularProgress size={24} /> : 'Submit'}
         </Button>
       </Stack>
+
+      {/* Success Message */}
+      <Snackbar
+        open={success}
+        autoHideDuration={3000}
+        onClose={() => setSuccess(false)}
+      >
+        <Alert severity="success" variant="filled">
+          Subject info submitted successfully!
+        </Alert>
+      </Snackbar>
+
+      {/* Error Message */}
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={4000}
+        onClose={() => setError('')}
+      >
+        <Alert severity="error" variant="filled">
+          {error}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
