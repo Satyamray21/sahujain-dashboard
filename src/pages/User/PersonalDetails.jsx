@@ -19,7 +19,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import HomeIcon from '@mui/icons-material/Home';
 import { useDispatch } from 'react-redux';
-import {submitPersonalInfo} from "../../features/personalInfo/personalInfoSlice"
+import { submitPersonalInfo } from "../../features/personalInfo/personalInfoSlice"
 const genders = ['Male', 'Female', 'Other'];
 const castes = ['General', 'OBC', 'SC', 'ST'];
 const categories = ['None', 'PWD', 'EWS', 'Ex-Serviceman'];
@@ -128,9 +128,9 @@ const PersonalDetails = () => {
             candidateSignature: null,
         },
         validationSchema,
-        onSubmit:  (values) => {
-           
-              dispatch(submitPersonalInfo(values));
+        onSubmit: (values) => {
+
+            dispatch(submitPersonalInfo(values));
 
         }
     });

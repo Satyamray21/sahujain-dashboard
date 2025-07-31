@@ -33,12 +33,30 @@ export const loginCandidate = createAsyncThunk(
     }
   }
 );
+// Thunk to send OTP
+export const sendVerificationCode = createAsyncThunk(
+  'candidate/sendVerificationCode',
+  async (email, { rejectWithValue }) => {
+    try {
+      const res = await axios.post('/candidate/send-Otp', { email });
+      return res.data.message;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to send OTP');
+    }
+  }
+);
+
 const initialState = {
   loading: false,
   error: null,
   user: null,
   token: null,
   success: false,
+  otpStatus: {
+    loading: false,
+    success: false,
+    error: null,
+  }
 };
 const candidateSlice = createSlice({
   name: 'candidate',
@@ -83,7 +101,22 @@ const candidateSlice = createSlice({
       .addCase(loginCandidate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(sendVerificationCode.pending, (state) => {
+    state.otpStatus.loading = true;
+    state.otpStatus.success = false;
+    state.otpStatus.error = null;
+  })
+  .addCase(sendVerificationCode.fulfilled, (state, action) => {
+    state.otpStatus.loading = false;
+    state.otpStatus.success = true;
+    state.otpStatus.error = null;
+  })
+  .addCase(sendVerificationCode.rejected, (state, action) => {
+    state.otpStatus.loading = false;
+    state.otpStatus.success = false;
+    state.otpStatus.error = action.payload;
+  });
   },
 });
 

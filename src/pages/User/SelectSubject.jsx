@@ -45,8 +45,8 @@ const SubjectInfoForm = () => {
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = () => {
-    if (!course || majorSubject.length === 0 || !minorSubject) {
-      setError('Please select all fields');
+    if (!course || majorSubject.length === 0 || majorSubject.length > 2 || !minorSubject) {
+      setError('Please select a course, 1 or 2 major subjects, and a minor subject');
       return;
     }
     if (majorSubject.includes(minorSubject)) {
@@ -76,7 +76,7 @@ const SubjectInfoForm = () => {
       <Divider sx={{ mb: 2 }} />
 
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <FormControl fullWidth>
             <InputLabel id="course-label">Course</InputLabel>
             <Select
@@ -101,7 +101,7 @@ const SubjectInfoForm = () => {
 
         {course && (
           <>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <FormControl fullWidth>
                 <InputLabel id="major-label">Major Subject(s)</InputLabel>
                 <Select
@@ -110,7 +110,12 @@ const SubjectInfoForm = () => {
                   multiple
                   value={majorSubject}
                   label="Major Subject"
-                  onChange={(e) => setMajorSubject(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 2) {
+                      setMajorSubject(value);
+                    }
+                  }}
                   renderValue={(selected) => selected.join(', ')}
                 >
                   {subjectOptions[course].major.map((subject) => (
@@ -120,9 +125,10 @@ const SubjectInfoForm = () => {
                   ))}
                 </Select>
               </FormControl>
+
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <FormControl fullWidth>
                 <InputLabel id="minor-label">Minor Subject</InputLabel>
                 <Select

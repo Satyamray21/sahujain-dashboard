@@ -19,7 +19,7 @@ const scoreTypes = ['Percentage', 'CGPA'];
 
 const AcademicInformation = () => {
     const dispatch = useDispatch();
-    const { loading } = useSelector((state) => state. personalInfo);
+    const { loading } = useSelector((state) => state.personalInfo);
 
     const [academicData, setAcademicData] = useState(
         educationLevels.map((level) => ({
@@ -112,7 +112,7 @@ const AcademicInformation = () => {
                     </Typography>
 
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                                 fullWidth
                                 label={`${level} Board`}
@@ -130,7 +130,7 @@ const AcademicInformation = () => {
                             </TextField>
                         </Grid>
 
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                                 fullWidth
                                 label={`${level} Subject`}
@@ -141,7 +141,7 @@ const AcademicInformation = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sm={3}>
+                        <Grid size={{ xs: 12, sm: 3 }}>
                             <TextField
                                 fullWidth
                                 label="yearOfPassing of Passing"
@@ -153,7 +153,7 @@ const AcademicInformation = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sm={3}>
+                        <Grid size={{ xs: 12, sm: 3 }}>
                             <TextField
                                 select
                                 fullWidth
@@ -172,7 +172,7 @@ const AcademicInformation = () => {
 
                         {academicData[index].scoreType === 'Percentage' ? (
                             <>
-                                <Grid item xs={12} sm={3}>
+                                <Grid size={{ xs: 12, sm: 3 }}>
                                     <TextField
                                         fullWidth
                                         label="Marks marksObtained"
@@ -186,7 +186,7 @@ const AcademicInformation = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={3}>
+                                <Grid size={{ xs: 12, sm: 3 }}>
                                     <TextField
                                         fullWidth
                                         label="maximumMarksimum Marks"
@@ -200,7 +200,7 @@ const AcademicInformation = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} sm={3}>
+                                <Grid size={{ xs: 12, sm: 3 }}>
                                     <TextField
                                         fullWidth
                                         label="Percentage"
@@ -212,7 +212,7 @@ const AcademicInformation = () => {
                                 </Grid>
                             </>
                         ) : (
-                            <Grid item xs={12} sm={3}>
+                            <Grid size={{ xs: 12, sm: 3 }}>
                                 <TextField
                                     fullWidth
                                     label="CGPA"
@@ -229,7 +229,7 @@ const AcademicInformation = () => {
                 </Box>
             ))}
 
-            <Box textAlign="center" mt={4}>
+            <Box sx={{ justifyContent: 'flex-end', display: 'flex' }} mt={4}>
                 <button
                     style={{
                         backgroundColor: '#1a237e',
@@ -240,7 +240,7 @@ const AcademicInformation = () => {
                         fontSize: '16px',
                         fontWeight: '600',
                         cursor: loading ? 'not-allowed' : 'pointer',
-                        boxShadow: '0px 4px 10px rgba(0,0,0,0.2)',
+                        boxShadow: '0px 4px 10px rgba(32, 20, 20, 0.2)',
                         minWidth: '180px',
                     }}
                     onClick={handleSubmit}
