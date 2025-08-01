@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Grid,
   TextField,
@@ -43,6 +43,18 @@ const SubjectInfoForm = () => {
   const [minorSubject, setMinorSubject] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+const subjectInfo = useSelector((state) => state.user.subjectInfo);
+
+useEffect(() => {
+  if (subjectInfo) {
+    setCourse(subjectInfo.course || ''); // if course is saved in backend
+    setMajorSubject(subjectInfo.majorSubject || []);
+    setMinorSubject(subjectInfo.minorSubject?.[0] || ''); // ✅ fixes array to string
+  }
+}, [subjectInfo]);
+
+
+console.log('subjectInfo from Redux:', subjectInfo);
 
   const handleSubmit = () => {
     if (!course || majorSubject.length === 0 || majorSubject.length > 2 || !minorSubject) {

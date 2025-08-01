@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
     Grid,
     TextField,
@@ -34,7 +34,39 @@ const AcademicInformation = () => {
             cgpa: ''
         }))
     );
+useEffect(() => {
+    if (academicInfo?.academicRecords?.length) {
+        // Map backend records to UI format
+        const mapped = educationLevels.map((level) => {
+            const record = academicInfo.academicRecords.find(r => r.level === level);
+            if (!record) return {
+                level,
+                board: '',
+                subject: '',
+                yearOfPassing: '',
+                scoreType: 'Percentage',
+                marksObtained: '',
+                maximumMarks: '',
+                percentage: '',
+                cgpa: ''
+            };
 
+            return {
+                level,
+                board: record.board || '',
+                subject: record.subject || '',
+                yearOfPassing: record.yearOfPassing || '',
+                scoreType: record.scoreType || 'Percentage',
+                marksObtained: record.marksObtained || '',
+                maximumMarks: record.maximumMarks || '',
+                percentage: record.percentage || '',
+                cgpa: record.cgpa || ''
+            };
+        });
+
+        setAcademicData(mapped);
+    }
+}, [academicInfo]);
     const handleChange = (index, field, value) => {
         const updated = [...academicData];
         updated[index][field] = value;

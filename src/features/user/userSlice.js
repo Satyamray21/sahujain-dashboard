@@ -95,6 +95,9 @@ const candidateSlice = createSlice({
       .addCase(loginCandidate.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+         state.personalInfo = action.payload.personalInfo; // ✅ add this
+    state.academicInfo = action.payload.academicInfo; // optional
+    state.subjectInfo = action.payload.subjectInfo;   // op
         state.token = action.payload.token;
         state.success = true;
       })

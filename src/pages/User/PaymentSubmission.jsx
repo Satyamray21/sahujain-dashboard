@@ -8,12 +8,13 @@ import {
     TextField,
     Alert
 } from '@mui/material';
-
+import {submitFinalApplication} from "../../features/personalInfo/personalInfoSlice"
+import {useDispatch} from 'react-redux';
 const PaymentSubmission = () => {
     const [showSBIInput, setShowSBIInput] = useState(false);
     const [sbiRefNo, setSbiRefNo] = useState('');
     const [submitted, setSubmitted] = useState(false);
-
+    const dispatch = useDispatch();
     const handleConfirmPay = () => {
         alert('Payment Process Initiated!');
     };
@@ -27,7 +28,7 @@ const PaymentSubmission = () => {
     const handleSBISubmit = () => {
         if (sbiRefNo.trim() !== '') {
             setSubmitted(true);
-            console.log('SBI Reference No:', sbiRefNo);
+            dispatch(submitFinalApplication());
         }
     };
 
