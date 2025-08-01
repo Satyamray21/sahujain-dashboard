@@ -20,6 +20,8 @@ const scoreTypes = ['Percentage', 'CGPA'];
 const AcademicInformation = () => {
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.personalInfo);
+   const academicInfo = useSelector((state) => state.user.academicInfo);
+
 
     const [academicData, setAcademicData] = useState(
         educationLevels.map((level) => ({
@@ -34,6 +36,35 @@ const AcademicInformation = () => {
             cgpa: ''
         }))
     );
+
+    const handleChange = (index, field, value) => {
+        const updated = [...academicData];
+        updated[index][field] = value;
+
+        // Auto-calculate percentage
+        if (field === 'marksObtained' || field === 'maximumMarks') {
+            const marksObtained = parseFloat(updated[index].marksObtained || 0);
+            const maximumMarks = parseFloat(updated[index].maximumMarks || 0);
+            updated[index].percentage =
+                maximumMarks > 0 ? ((marksObtained / maximumMarks) * 100).toFixed(2) : '';
+        }
+
+        setAcademicData(updated);
+    };
+
+    const handleScoreTypeChange = (index, value) => {
+        const updated = [...academicData];
+        updated[index].scoreType = value;
+        // Reset related fields when score type changes
+        if (value === 'Percentage') {
+            updated[index].cgpa = '';
+        } else {
+            updated[index].marksObtained = '';
+            updated[index].maximumMarks = '';
+            updated[index].percentage = '';
+        }
+        setAcademicData(updated);
+    };
 useEffect(() => {
     if (academicInfo?.academicRecords?.length) {
         // Map backend records to UI format
@@ -67,35 +98,6 @@ useEffect(() => {
         setAcademicData(mapped);
     }
 }, [academicInfo]);
-    const handleChange = (index, field, value) => {
-        const updated = [...academicData];
-        updated[index][field] = value;
-
-        // Auto-calculate percentage
-        if (field === 'marksObtained' || field === 'maximumMarks') {
-            const marksObtained = parseFloat(updated[index].marksObtained || 0);
-            const maximumMarks = parseFloat(updated[index].maximumMarks || 0);
-            updated[index].percentage =
-                maximumMarks > 0 ? ((marksObtained / maximumMarks) * 100).toFixed(2) : '';
-        }
-
-        setAcademicData(updated);
-    };
-
-    const handleScoreTypeChange = (index, value) => {
-        const updated = [...academicData];
-        updated[index].scoreType = value;
-        // Reset related fields when score type changes
-        if (value === 'Percentage') {
-            updated[index].cgpa = '';
-        } else {
-            updated[index].marksObtained = '';
-            updated[index].maximumMarks = '';
-            updated[index].percentage = '';
-        }
-        setAcademicData(updated);
-    };
-
     const handleSubmit = () => {
         console.log('Submitting:', academicData);
         dispatch(submitAcademicInfo(academicData));
